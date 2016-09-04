@@ -1,0 +1,8 @@
+#!/bin/bash
+
+vol=/postfix
+cp $vol/etc/passwd /etc/passwd
+cp -f $vol/etc/shadow /etc/shadow
+
+rsyslogd
+postfix start
