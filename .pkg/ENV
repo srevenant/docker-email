@@ -1,5 +1,5 @@
 _name=docker-email
-_org=srevenant
+_org=revenant
 # NO_DOCKER_CACHE if defined will add --no-cache to docker build
 # BUILD_VERSION, if defined, will add it as a tag to the build image
 export DOCKER_IMAGE=${_org}/${_name}
