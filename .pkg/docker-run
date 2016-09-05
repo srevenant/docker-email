@@ -1,20 +1,7 @@
-#!/bin/bash
-
-ps=$(docker ps -a -f name=${DOCKER_NAME} --format="{{.ID}}")
-if [ -n "$ps" ]; then
-	echo "Cleaning up old containers for ${DOCKER_NAME}"
-	for img in $ps; do
-		docker rm $img
-	done
-fi
-
-echo "Starting ${DOCKER_NAME}"
-detach=true
-docker run --detach=$detach --restart=always \
-    --log-driver=syslog \
-	--name=${DOCKER_NAME} --hostname=mail.cold.org \
-	--volume /data/postfix:/postfix \
-	--volume /app/python-3:/app/python-3 \
-    --publish 25:25 --publish 465:465 --publish 587:587 --publish 993:993 \
-	-P mail-server
-
+docker run --detach=true --restart=always \
+	    --log-driver=syslog \
+		--name=${DOCKER_NAME} --hostname=mail.cold.org \
+		--volume /data/postfix:/postfix \
+		--volume /app/python-3:/app/python-3 \
+	    --publish 25:25 --publish 465:465 --publish 587:587 --publish 993:993 \
+		-P $DOCKER_NAME
