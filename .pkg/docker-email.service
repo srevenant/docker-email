@@ -1,0 +1,23 @@
+[Unit]
+Description=Email Service Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+#EnvironmentFile=/etc/sysconfig/docker-email
+#ExecStartPre=/usr/bin/docker pull revenant/docker-email
+ExecStartPre=-/usr/bin/docker stop docker-email
+ExecStartPre=-/usr/bin/docker rm -f docker-email
+ExecStart=/usr/bin/docker run --rm \
+        --hostname=mail.cold.org \
+        --log-driver=syslog --name=docker-email \
+        --volume /data/postfix:/postfix \
+        --volume /app/python-3:/app/python-3 \
+        --publish 25:25 --publish 465:465 --publish 587:587 --publish 993:993 \
+        -P revenant/docker-email
+ExecStop=-/usr/bin/docker stop -t 2 docker-email
+ExecStopPost=-/usr/bin/docker rm -f docker-email
+
+[Install]
+WantedBy=multi-user.target

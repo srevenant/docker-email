@@ -1,8 +1,42 @@
 #!/bin/bash
 
-vol=/postfix
+vol=/mail
 cp $vol/etc/passwd /etc/passwd
 cp -f $vol/etc/shadow /etc/shadow
 
+####################
+# rsyslog
+hostip=$(ip route show | awk '/default/ {print $3}')
+echo "\$ModLoad imuxsock" > /etc/rsyslog.conf
+echo "\$WorkDirectory /var/lib/rsyslog" >> /etc/rsyslog.conf
+echo "\$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat" >> /etc/rsyslog.conf
+echo "*.* @@$hostip:514" >> /etc/rsyslog.conf
+
+# setup postfix & spamassassin
+sed  -e 's/^\(smtp  *inet.*\)/\1 -o content_filter=spamassassin/' \
+	/etc/postfix.old/master.cf > /etc/postfix/master.cf
+cat >>/etc/postfix/master.cf<<END
+spamassassin unix -     n       n       -       -       pipe user=spamfilter argv=/usr/bin/spamc -f -e  /usr/sbin/sendmail -oi -f \${sender} \${recipient}
+END
+cp /mail/etc/spamassassin/local.cf /etc/mail/spamassassin/local.cf
+
+# setup dovecot
+cp /mail/etc/dovecot.conf /etc/dovecot.conf
+cp /mail/etc/letsencrypt/* /etc/letsencrypt
+
+####################
+# startup
 rsyslogd
 postfix start
+spamd --daemonize --create-prefs --max-children 5 --helper-home-dir \
+	  --username spamfilter -H ${SAHOME} -s ${SAHOME}/spamfilter.log \
+      --listen-ip=0.0.0.0 --allowed-ips=0.0.0.0/0 $SPAMDOPTIONS
+
+greylist_delay=60
+#socket=/var/spool/postfix/postgrey/socket
+socket=/mail/spool/postgrey/socket
+postgrey --unix=$socket --group=postgrey --user=postgrey \
+ '--greylist-text=Greylisted for %s seconds' \
+ --daemonize --delay=$greylist_delay
+dovecot -F
+

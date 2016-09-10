@@ -1,7 +1,7 @@
-docker run --detach=true --restart=always \
-	    --log-driver=syslog \
-		--name=${DOCKER_NAME} --hostname=mail.cold.org \
-		--volume /data/postfix:/postfix \
-		--volume /app/python-3:/app/python-3 \
-	    --publish 25:25 --publish 465:465 --publish 587:587 --publish 993:993 \
-		-P $DOCKER_NAME
+docker run --rm \
+        --hostname=mail.cold.org \
+        --log-driver=syslog --name=docker-email \
+        --volume /data/mail:/mail \
+        --volume /app/python-3:/app/python-3 \
+        --publish 25:25 --publish 465:465 --publish 587:587 --publish 993:993 \
+        -P revenant/docker-email
