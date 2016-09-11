@@ -1,5 +1,0 @@
-
-users : passwd, group, shadow
-spamassassin
-postgrey
-dovecot

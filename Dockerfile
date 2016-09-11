@@ -1,15 +1,11 @@
 FROM revenant/centos7-hardened
 
-EXPOSE 25/tcp 465/tcp 587/tcp 110/tcp 143/tcp 993/tcp 995/tcp
-
-RUN cat /etc/resolv.conf
-
-RUN find /etc/yum.repos.d
+EXPOSE 25/tcp 465/tcp 993/tcp
 
 RUN yum -y install epel-release
 RUN yum -y install rsyslog \
            postfix postgrey spamassassin \
-           dovecot dovecoat-imapd && yum clean all
+           dovecot && yum clean all
 
 VOLUME /mail
 

@@ -13,16 +13,21 @@ echo "\$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat" >> /etc/rsyslog
 echo "*.* @@$hostip:514" >> /etc/rsyslog.conf
 
 # setup postfix & spamassassin
-sed  -e 's/^\(smtp  *inet.*\)/\1 -o content_filter=spamassassin/' \
-	/etc/postfix.old/master.cf > /etc/postfix/master.cf
-cat >>/etc/postfix/master.cf<<END
-spamassassin unix -     n       n       -       -       pipe user=spamfilter argv=/usr/bin/spamc -f -e  /usr/sbin/sendmail -oi -f \${sender} \${recipient}
-END
+#sed  -e 's/^\(smtp  *inet.*\)/\1 -o content_filter=spamassassin/' \
+#	/etc/postfix.old/master.cf > /etc/postfix/master.cf
+#cat >>/etc/postfix/master.cf<<END
+#spamassassin unix -     n       n       -       -       pipe user=spamfilter argv=/usr/bin/spamc -f -e  /usr/sbin/sendmail -oi -f \${sender} \${recipient}
+#END
 cp /mail/etc/spamassassin/local.cf /etc/mail/spamassassin/local.cf
 
 # setup dovecot
-cp /mail/etc/dovecot.conf /etc/dovecot.conf
+#cp /mail/etc/dovecot.conf /etc/dovecot/dovecot.conf
+mkdir /etc/letsencrypt
 cp /mail/etc/letsencrypt/* /etc/letsencrypt
+dconf=/etc/dovecot/conf.d/10-ssl.conf
+sed -i -e 's:^ssl_cert.*$:ssl_cert = </etc/letsencrypt/cold.org-crt.pem:' $dconf
+sed -i -e 's:^ssl_key.*$:ssl_key = </etc/letsencrypt/cold.org-key.pem:' $dconf
+sed -i -e 's:^  #unix_listener .*$:  unix_listener /var/spool/postfix/private/auth {\n    mode = 0666\n  }:' /etc/dovecot/conf.d/10-master.conf
 
 ####################
 # startup
@@ -38,5 +43,5 @@ socket=/mail/spool/postgrey/socket
 postgrey --unix=$socket --group=postgrey --user=postgrey \
  '--greylist-text=Greylisted for %s seconds' \
  --daemonize --delay=$greylist_delay
-dovecot -F
+dovecot
 
