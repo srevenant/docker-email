@@ -1,4 +1,5 @@
 docker run --rm \
+		-e TZ=US/Mountain \
         --hostname=mail.cold.org \
         --log-driver=syslog --name=docker-email \
         --volume /data/mail:/mail \

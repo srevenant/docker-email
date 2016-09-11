@@ -1,0 +1,9 @@
+#!/bin/bash
+
+SAHOME=/data/mail/spamassassin
+ARGS="--dbpath $SAHOME/bayes --progress"
+
+nice -n 19 sa-learn $ARGS --no-sync --ham /data/mail/home/*/Maildir/cur 
+nice -n 19 sa-learn $ARGS --no-sync --spam /data/mail/home/*/Maildir/.Junk/cur
+nice -n 19 sa-learn $ARGS --sync
+chown -R 990:990 $SAHOME/bayes
