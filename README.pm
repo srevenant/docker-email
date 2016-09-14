@@ -7,3 +7,8 @@ Components:
 * Spamassassin
 * Greylisting
 * rsyslog (cause postfix and others want to send to syslog, boo)
+* TLS keys from letsencrypt.org
+
+Note:
+
+* The configurations for this are not stored here, due to security exposure.  If you would like a copy, feel free to ping me.
