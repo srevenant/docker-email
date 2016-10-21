@@ -4,6 +4,8 @@ vol=/mail
 cp $vol/etc/passwd /etc/passwd
 cp -f $vol/etc/shadow /etc/shadow
 
+newaliases
+
 ####################
 # rsyslog
 hostip=$(ip route show | awk '/default/ {print $3}')

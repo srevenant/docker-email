@@ -3,7 +3,7 @@
 SAHOME=/data/mail/spamassassin
 ARGS="--dbpath $SAHOME/bayes --progress"
 
-nice -n 19 sa-learn $ARGS --no-sync --ham /data/mail/home/*/Maildir/cur 
-nice -n 19 sa-learn $ARGS --no-sync --spam /data/mail/home/*/Maildir/.Junk/cur
-nice -n 19 sa-learn $ARGS --sync
+nice -n 19 sa-learn $ARGS --no-sync --ham /data/mail/home/{bjg,brandon}/Maildir/cur  2>&1
+nice -n 19 sa-learn $ARGS --no-sync --spam /data/mail/home/{bjg,brandon}/Maildir/.Junk/cur 2>&1
+nice -n 19 sa-learn $ARGS --sync 2>&1
 chown -R 990:990 $SAHOME/bayes

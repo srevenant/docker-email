@@ -1,6 +1,6 @@
 FROM revenant/centos7-hardened
 
-EXPOSE 25/tcp 465/tcp 993/tcp
+EXPOSE 25/tcp 465/tcp 587/tcp 993/tcp
 
 RUN yum -y install epel-release
 RUN yum -y install rsyslog \

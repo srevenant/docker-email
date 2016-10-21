@@ -4,5 +4,5 @@ docker run --rm \
         --log-driver=syslog --name=docker-email \
         --volume /data/mail:/mail \
         --volume /app/python-3:/app/python-3 \
-        --publish 25:25 --publish 465:465 --publish 587:587 --publish 993:993 \
+        --publish 25:25 --publish 465:465 --publish 587:465 --publish 993:993 \
         -P revenant/docker-email
