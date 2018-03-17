@@ -1,0 +1,34 @@
+version: "3.2"
+services:
+  postfix:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+    image: revenant/docker-email
+    environment:
+      - TZ=US/Mountain
+    hostname: mail.cold.org
+    volumes:
+      - /data/mail:/mail
+      # spamd isn't writing to syslog
+      - /data/mail/log:/var/log
+      # import host's syslog socket
+      - /dev/log:/dev/log
+    ports:
+      - target: 25
+        published: 25
+        protocol: tcp
+        mode: host
+      - target: 465
+        published: 587
+        protocol: tcp
+        mode: host
+      - target: 465
+        published: 465
+        protocol: tcp
+        mode: host
+      - target: 993
+        published: 993
+        protocol: tcp
+        mode: host

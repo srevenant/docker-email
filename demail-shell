@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "$#" -eq 0 ]; then
+    args=( "/bin/bash" )
+else
+    args=( "$@" )
+fi
+
+DOCKER_NAME=email_postfix
+cid=$(docker ps -f name=${DOCKER_NAME} --format="{{.ID}}")
+
+if [ -z "$cid" ]; then
+    echo "No running container for ${DOCKER_NAME}" 1>&2
+else
+    echo ">>> " docker exec -i -t $cid "${args[@]}"
+    exec docker exec -i -t $cid "${args[@]}"
+fi
+
+

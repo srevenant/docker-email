@@ -1,0 +1,12 @@
+#!/bin/bash
+
+image=revenant/docker-email
+
+cd /home/bjg/git/docker-email
+
+docker build -t $image --build-arg BUILD_NUMBER=$(date +%Y.%m.%d) . &&
+  docker service update --image=$image --force email_postfix
+
+docker system prune -f
+docker volume prune -f
+

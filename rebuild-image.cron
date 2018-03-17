@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/home/bjg/git/docker-email/build > last-build.log 2>&1
