@@ -25,3 +25,12 @@ Full service secured/spam resistant SMTP server, with IMAP and SASL support as w
       the user's home folder, which is useful.
 
 * Postfix configuration -- you will need to initialize all the postfix files with the defaults, you can leverate that stored in `data/mail/postfix` for additional help.  Replace `example.com` as appropriate for your own configuration.
+
+* Crontab -- on the base host (outside the container) I have a few crontab jobs:
+
+    0 0 * * * /path-to-repo/docker-email/spam-learn.cron
+    0 0 * * 6 /path-to-repo/docker-email/rebuild-image.cron
+    0 0 * * * /root/renew-letsencrypt.sh
+
+* Letencrypt -- I run this on the base host, external to the container, but the renew/register scripts are included for reference.
+
