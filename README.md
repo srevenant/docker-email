@@ -28,9 +28,11 @@ Full service secured/spam resistant SMTP server, with IMAP and SASL support as w
 
 * Crontab -- on the base host (outside the container) I have a few crontab jobs:
 
-    0 0 * * * /path-to-repo/docker-email/spam-learn.cron
-    0 0 * * 6 /path-to-repo/docker-email/rebuild-image.cron
-    0 0 * * * /root/renew-letsencrypt.sh
+```
+0 0 * * * /path-to-repo/spam-learn.cron
+0 0 * * 6 /path-to-repo/rebuild-image.cron
+0 0 * * * /path-to-repo/renew-letsencrypt.sh
+```
 
 * Letencrypt -- I run this on the base host, external to the container, but the renew/register scripts are included for reference.
 
