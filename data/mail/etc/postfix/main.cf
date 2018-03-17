@@ -1,0 +1,121 @@
+queue_directory = /var/spool/postfix
+command_directory = /usr/sbin
+daemon_directory = /usr/libexec/postfix
+data_directory = /var/lib/postfix
+mail_owner = postfix
+inet_interfaces = all
+inet_protocols = all
+
+mynetworks = 
+myhostname = example.com
+mydestination = $myhostname, $mydomain
+# add other domains you want to recive mail on here
+
+relay_domains = 
+# add your domains you want to receive for
+
+alias_maps = hash:/etc/postfix/aliases
+alias_database = hash:/etc/postfix/aliases
+virtual_maps = hash:/etc/postfix/virtual
+recipient_bcc_maps = hash:/etc/postfix/recipient_bcc
+sender_bcc_maps = hash:/etc/postfix/sender_bcc
+header_checks = regexp:/etc/postfix/check_header
+biff = no
+recipient_delimiter = +
+home_mailbox = Maildir/
+message_size_limit = 20480000
+
+
+smtpd_helo_required = yes
+always_add_missing_headers = yes
+strict_rfc821_envelopes = yes
+
+allow_percent_hack = no
+swap_bangpath = no
+disable_vrfy_command = yes
+append_at_myorigin = no
+append_dot_mydomain = no
+allow_untrusted_routing = no
+smtpd_helo_required = yes
+strict_rfc821_envelopes = yes
+
+transport_retry_time = 15m
+
+# tls
+smtpd_tls_cert_file = /mail/etc/letsencrypt/example.com-crt.pem
+smtpd_tls_key_file = /mail/etc/letsencrypt/example.com-key.pem
+smtpd_tls_CAfile = /mail/etc/letsencrypt/ca.pem
+smtpd_tls_loglevel = 1
+smtpd_tls_received_header = yes
+smtpd_tls_security_level = encrypt
+smtpd_tls_auth_only = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_path = /mail/spool/private/auth
+smtpd_sasl_local_domain=$myhostname
+
+broken_sasl_auth_clients = yes
+# outbound
+smtp_tls_security_level = may
+smtp_sasl_auth_enable = no
+
+# override in master.cf for smtps
+smtpd_tls_security_level = may
+smtpd_sasl_auth_enable = no
+smtpd_tls_auth_only = no
+smtpd_enforce_tls = no
+
+# disallow methods that allow anonymous authentication. 
+# where to find sasl_passwd
+#smtp_sasl_password_maps = hash:/etc/postfix/sasl_password
+
+smtpd_helo_restrictions =
+        permit_mynetworks
+        permit_sasl_authenticated
+        check_sender_access hash:/etc/postfix/check_sender
+#       reject_invalid_hostname
+        reject_non_fqdn_hostname
+#       reject_unknown_hostname
+
+# was commented out?
+#smtpd_relay_restrictions =
+#        permit_mynetworks,
+#        permit_sasl_authenticated,
+#        reject_unauth_destination
+#        reject
+
+smtpd_client_restrictions =
+        permit_mynetworks
+        permit_sasl_authenticated
+        check_client_access hash:/etc/postfix/check_client
+        #reject_unknown_client # temp disable for WGU
+smtpd_sender_restrictions =
+        permit_mynetworks
+        permit_sasl_authenticated
+        check_sender_access hash:/etc/postfix/check_sender
+        reject_unknown_sender_domain
+#       warn_if_reject reject_non_fqdn_sender
+#       warn_if_reject reject_unverified_sender
+
+smtpd_recipient_restrictions =
+        permit_mynetworks
+        permit_sasl_authenticated
+        reject_unauth_destination
+#       check_sender_access hash:/etc/postfix/sender_allowed_relay
+        reject_non_fqdn_recipient
+        reject_unknown_recipient_domain
+        reject_unauth_pipelining
+        check_recipient_access hash:/etc/postfix/check_recipient
+        check_policy_service unix:/mail/spool/postgrey/socket
+        reject_unknown_recipient_domain
+        reject_unverified_recipient
+        reject_unauth_destination
+
+allow_untrusted_routing = no
+
+## DKIM
+## --------------------------------------
+#milter_default_action = accept
+#milter_protocol = 3
+#smtpd_milters = inet:localhost:8891
+#non_smtpd_milters = inet:localhost:8891
