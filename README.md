@@ -16,6 +16,13 @@ Full service secured/spam resistant SMTP server, with IMAP and SASL support as w
 
 # Setup
 
+* run as a service inside docker swarm:
+
+```
+docker swarm init
+docker stack deploy -c docker-email.yml email
+```
+
 * `/data/mail` is a root folder imported into the container, for persistent storage; you can find a skeleton of thi structure in this repo under data/mail.
 
     - update passwd,shadow,group files in `/data/mail/etc` which are then replicated into the
