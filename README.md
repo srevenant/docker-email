@@ -16,13 +16,6 @@ Full service secured/spam resistant SMTP server, with IMAP and SASL support as w
 
 # Setup
 
-* run as a service inside docker swarm:
-
-```
-docker swarm init
-docker stack deploy -c docker-email.yml email
-```
-
 * `/data/mail` is a root folder imported into the container, for persistent storage; you can find a skeleton of thi structure in this repo under data/mail.
 
     - update passwd,shadow,group files in `/data/mail/etc` which are then replicated into the
@@ -30,6 +23,13 @@ docker stack deploy -c docker-email.yml email
       to login to the running container (`./demail-shell`) and run useradd, then copy the
       relevant bits back out to the source passwd/shadow/group files.  This will also create
       the user's home folder, which is useful.
+
+* run as a service inside docker swarm, which assumes you have an external base folder of `/data/mail`--if youw ant to change that, update this stackfile as well.
+
+```
+docker swarm init
+docker stack deploy -c docker-email.yml email
+```
 
 * Postfix configuration -- you will need to initialize all the postfix files with the defaults, you can leverate that stored in `data/mail/postfix` for additional help.  Replace `example.com` as appropriate for your own configuration.
 
