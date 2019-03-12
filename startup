@@ -48,3 +48,11 @@ postgrey --unix=$socket --group=postgrey --user=postgrey \
  --daemonize --delay=$greylist_delay
 dovecot
 
+cd /etc
+rm -rf opendkim*
+ln -s /mail/etc/opendkim
+ln -s /mail/etc/opendkim.conf
+mkdir /var/spool/postfix/opendkim
+chown opendkim:opendkim /var/spool/postfix/opendkim
+source /etc/sysconfig/opendkim
+/usr/sbin/opendkim $OPTIONS

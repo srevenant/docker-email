@@ -11,8 +11,9 @@ COPY startup /etc/minit/startup
 RUN yum -y install epel-release && \
     yum -y upgrade && \
     yum -y install rsyslog \
-           postfix postgrey spamassassin \
+           postfix postgrey spamassassin opendkim \
            dovecot && \
+    groupmems -g opendkim --add postfix && \
     yum -y clean all && \
     localedef -i en_US -f UTF-8 en_US.UTF-8; \
     /root/os-baseline.sh; \
